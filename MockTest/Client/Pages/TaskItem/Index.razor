@@ -1,0 +1,78 @@
+﻿@page "/TaskItems/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card-title">Task Items</h3>
+
+<br/>
+
+@if (Tasks == null)
+{
+    <div class="alert alert-info">Loading Tasks...</div>
+}
+else
+{
+    <table class="table table-responsive" id="branchesTable">
+        <thead>
+            <tr>
+                <th>Task Id</th>
+                <th>Task Name</th>
+                <th>IsCompleted</th>
+                <th>Due Date</th>
+                <th>Created Date</th>
+                <th>Created By</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in Tasks.Where(c=>c.CreatedBy==)
+            {
+                <tr>
+                    <td>@task.Id</td>
+                    <td>@task.TaskName</td>
+                    <td>@task.IsCompleted</td>
+                    <td>@task.DueDate</td>
+                    <td>@task.CreatedDate</td>
+                    <td>@task.CreatedBy</td>
+                    <td>
+                        <a href="/branches/view/@task.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+
+                        <a href="/branches/edit/@task.Id" class="btn btn-primary">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+
+                        <button class="btn btn-primary" @onclick="@(()=>Delete(task.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<TaskItem>? Tasks;
+
+    protected async override  Task OnInitializedAsync()
+    {
+        Tasks= await _client.GetFromJsonAsync<List<TaskItem>>($"{Endpoints.TaskItemsEndpoint}");
+    }
+
+    async Task Delete(int TaskItemId)
+    {
+        if(Tasks != null)
+        {
+            var Task = Tasks.First(q => q.Id == TaskItemId);
+            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {Task.TaskName}?");
+            if (confirm)
+            {
+                await _client.DeleteAsync($"{Endpoints.TaskItemsEndpoint}/{TaskItemId}");
+                await OnInitializedAsync();
+            }
+        }
+    }
+
+}
