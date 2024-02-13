@@ -6,6 +6,12 @@
 <h3 class="card-title">Task Items</h3>
 
 <br/>
+<a href="/TaskItems/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Task
+</a>
+<br />
+<br />
 
 @if (Tasks == null)
 {
@@ -22,6 +28,7 @@ else
                 <th>Due Date</th>
                 <th>Created Date</th>
                 <th>Created By</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -35,11 +42,11 @@ else
                     <td>@task.CreatedDate</td>
                     <td>@task.CreatedBy</td>
                     <td>
-                        <a href="/branches/view/@task.Id" class="btn btn-primary">
+                        <a href="/TaskItems/view/@task.Id" class="btn btn-primary">
                             <span class="oi oi-book"></span>
                         </a>
 
-                        <a href="/branches/edit/@task.Id" class="btn btn-primary">
+                        <a href="/TaskItems/edit/@task.Id" class="btn btn-primary">
                             <span class="oi oi-pencil"></span>
                         </a>
 

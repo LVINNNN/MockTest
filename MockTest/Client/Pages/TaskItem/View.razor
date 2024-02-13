@@ -1,0 +1,23 @@
+﻿@page "/TaskItems/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>View Task</h3>
+
+<FormComponent taskitem="taskitem" Disabled="true" />
+
+<br/>
+<a href="/TaskItems/" class="btn btn-secondary">
+    <span class="oi oi-arrow-left"></span>
+    Back To List
+</a>
+
+@code {
+    [Parameter] public int id { get; set; }
+    TaskItem? taskitem = new TaskItem();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        taskitem = await _client.GetFromJsonAsync<TaskItem>($"{Endpoints.TaskItemsEndpoint}/{id}");
+    }
+}

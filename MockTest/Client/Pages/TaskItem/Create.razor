@@ -1,0 +1,22 @@
+﻿@page "/TaskItems/create"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3 class="card-title">Create Task</h3>
+<hr />
+<br />
+
+<FormComponent ButtonText="Create Task" taskitem="taskitem" OnValidSubmit="@CreateTask" />
+
+
+
+@code {
+    TaskItem taskitem = new TaskItem();
+
+    private async Task CreateTask()
+    {
+        await _client.PostAsJsonAsync(Endpoints.TaskItemsEndpoint, taskitem);
+        _navManager.NavigateTo("/TaskItems/");
+    }
+
+}

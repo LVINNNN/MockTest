@@ -1,0 +1,29 @@
+﻿@page "/TaskItems/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Edit Task</h3>
+
+<FormComponent ButtonText="Update" OnValidSubmit="EditTaskItem" taskitem="taskitem" />
+
+<br />
+<a href="/TaskItems/" class="btn btn-secondary">
+    <span class="oi oi-arrow-left"></span>
+    Back To List
+</a>
+
+@code {
+    [Parameter] public int id { get; set; }
+    TaskItem? taskitem = new TaskItem();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        taskitem = await _client.GetFromJsonAsync<TaskItem>($"{Endpoints.TaskItemsEndpoint}/{id}");
+    }
+
+    async Task EditTaskItem()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.TaskItemsEndpoint}/{id}", taskitem);
+        _navManager.NavigateTo("/TaskItems/");
+    }
+}
